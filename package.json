@@ -10,7 +10,7 @@
     "start": "node src/server.js",
     "start-dev": "./build-support/start-dev.sh",
     "deploy": "git push heroku master --force",
-    "heroku-postbuild": "babel src/server.js -o src/server.js",
+    "heroku-postbuild": "babel src -d src",
     "test": "jest --verbose"
   },
   "dependencies": {
