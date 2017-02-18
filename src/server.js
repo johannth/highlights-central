@@ -16,12 +16,24 @@ const evernote = new Evernote.Client({
 
 app.use(bodyParser.json());
 
+const parseTimestameFromRequest = req => {
+  if (req.body.highlight.timestamp) {
+    try {
+      return new Date(Date.parse(req.body.highlight.timestamp));
+    } catch (error) {
+      return new Date();
+    }
+  } else {
+    return new Date();
+  }
+};
+
 app.post('/highlights', (req, res) => {
   const highlight = {
     parentSlug: req.body.highlight.parentSlug,
     parentTitle: req.body.highlight.parentTitle,
     parentURL: req.body.highlight.parentURL,
-    timestamp: new Date(Date.parse(req.body.highlight.timestamp)),
+    timestamp: parseTimestameFromRequest(req),
     text: req.body.highlight.text,
     url: req.body.highlight.url
   };
