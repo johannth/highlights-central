@@ -1,3 +1,4 @@
+import newrelic from 'newrelic';
 import express from 'express';
 import bodyParser from 'body-parser';
 import pgp from 'pg-promise';
