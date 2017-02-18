@@ -1,4 +1,10 @@
 CREATE TABLE highlights (
-    code        char(5) CONSTRAINT firstkey PRIMARY KEY,
-    title       varchar(40) NOT NULL
+    id UUID PRIMARY KEY,
+    parentSlug text NOT NULL,
+    parentTitle text NOT NULL,
+    parentURL text NOT NULL,
+    timestamp timestamp NOT NULL,
+    text text NOT NULL,
+    url text,
+    UNIQUE (parentSlug, text)
 );
