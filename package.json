@@ -1,0 +1,22 @@
+{
+  "name": "highlights",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {},
+  "author": "Jóhann Þ. Bergþórsson <johann.thorvaldur@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "node src/server.js",
+    "start-dev": "babel-watch src/server.js",
+    "heroku-postbuild": "babel src/server.js -o src/server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.16.1",
+    "express": "^4.14.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-preset-env": "^1.1.8",
+    "babel-watch": "^2.0.6"
+  }
+}
