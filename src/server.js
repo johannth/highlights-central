@@ -9,7 +9,10 @@ import { saveHighlightToDb, writeAllHighlightsToEvernote } from './core';
 const db = new pgp()(process.env.DATABASE_URL);
 const app = express();
 
-const evernote = new Evernote.Client({ token: process.env.EVERNOTE_TOKEN });
+const evernote = new Evernote.Client({
+  token: process.env.EVERNOTE_TOKEN,
+  sandbox: false
+});
 
 app.use(bodyParser.json());
 
