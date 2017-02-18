@@ -6,16 +6,19 @@
   "author": "Jóhann Þ. Bergþórsson <johann.thorvaldur@gmail.com>",
   "license": "MIT",
   "scripts": {
+    "bootstrap": "docker pull postgres:9.6.2-alpine",
     "start": "node src/server.js",
-    "start-dev": "babel-watch src/server.js",
+    "start-dev": "./build-support/start-dev.sh",
     "deploy": "git push heroku master --force",
     "heroku-postbuild": "babel src/server.js -o src/server.js"
   },
   "dependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-preset-env": "^1.1.8",
     "body-parser": "^1.16.1",
     "express": "^4.14.1",
-    "babel-cli": "^6.23.0",
-    "babel-preset-env": "^1.1.8"
+    "pg": "^6.1.2",
+    "pg-promise": "^5.5.6"
   },
   "devDependencies": {
     "babel-watch": "^2.0.6"
