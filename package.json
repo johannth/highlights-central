@@ -15,8 +15,10 @@
   },
   "dependencies": {
     "babel-cli": "^6.23.0",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.1.8",
     "body-parser": "^1.16.1",
+    "evernote": "^2.0.1-beta",
     "express": "^4.14.1",
     "newrelic": "^1.37.2",
     "pg": "^6.1.2",

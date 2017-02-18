@@ -8,3 +8,8 @@ CREATE TABLE highlights (
     url text,
     UNIQUE (parentSlug, text)
 );
+
+CREATE TABLE evernote (
+    parentSlug text PRIMARY KEY,
+    evernoteNoteId text NOT NULL
+);

@@ -2,32 +2,46 @@ import newrelic from 'newrelic';
 import express from 'express';
 import bodyParser from 'body-parser';
 import pgp from 'pg-promise';
+import Evernote from 'evernote';
 
-import { saveHighlightToDb } from './core';
+import { saveHighlightToDb, writeAllHighlightsToEvernote } from './core';
 
 const db = new pgp()(process.env.DATABASE_URL);
 const app = express();
+
+const evernote = new Evernote.Client({ token: process.env.EVERNOTE_TOKEN });
 
 app.use(bodyParser.json());
 
 app.post('/highlights', (req, res) => {
   const highlight = {
-    parentSlug: req.body.parentSlug,
-    parentTitle: req.body.parentTitle,
-    parentURL: req.body.parentURL,
-    timestamp: new Date(Date.parse(req.body.timestamp)),
-    text: req.body.text,
-    url: req.body.url
+    parentSlug: req.body.highlight.parentSlug,
+    parentTitle: req.body.highlight.parentTitle,
+    parentURL: req.body.highlight.parentURL,
+    timestamp: new Date(Date.parse(req.body.highlight.timestamp)),
+    text: req.body.highlight.text,
+    url: req.body.highlight.url
   };
 
+  const evernoteTags = req.body.evernote.tags || [];
+  const evernoteNotebookId = req.body.evernote.notebookId;
+
   saveHighlightToDb(db)(highlight)
-    .then(({ id }) => {
-      res.json({ highlight: { id } });
+    .then(({ id, parentSlug }) => {
+      console.log(id, parentSlug);
+      return writeAllHighlightsToEvernote(
+        db,
+        evernote
+      )(parentSlug, evernoteNotebookId, evernoteTags);
+    })
+    .then(() => {
+      res.json({});
     })
     .catch(error => {
+      console.error(error);
       newrelic.noticeError(error);
       res.status(500);
-      res.json({ message: 'Error on saving highlight' });
+      res.json({ error: { message: 'Error on saving highlight' } });
     });
 });
 
