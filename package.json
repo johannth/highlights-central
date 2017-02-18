@@ -8,15 +8,16 @@
   "scripts": {
     "start": "node src/server.js",
     "start-dev": "babel-watch src/server.js",
+    "deploy": "git push heroku master --force",
     "heroku-postbuild": "babel src/server.js -o src/server.js"
   },
   "dependencies": {
     "body-parser": "^1.16.1",
-    "express": "^4.14.1"
+    "express": "^4.14.1",
+    "babel-cli": "^6.23.0",
+    "babel-preset-env": "^1.1.8"
   },
   "devDependencies": {
-    "babel-cli": "^6.23.0",
-    "babel-preset-env": "^1.1.8",
     "babel-watch": "^2.0.6"
   }
 }
