@@ -15,7 +15,7 @@ const evernote = new Evernote.Client({
   sandbox: process.env.EVERNOTE_SANDBOX === 'true'
 });
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
 app.use(cors());
 
 const parseTimestampFromPayload = payload => {
@@ -42,6 +42,10 @@ const parseHighlightFromPayload = payload => {
 };
 
 app.post('/highlights', (req, res) => {
+  if (!req.body.highlights) {
+    res.json({});
+    return;
+  }
   const highlights = req.body.highlights.map(parseHighlightFromPayload);
 
   const evernoteTags = req.body.evernote.tags || [];
