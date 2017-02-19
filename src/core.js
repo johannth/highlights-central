@@ -66,9 +66,15 @@ const noteTitle = highlights => {
   return highlights[0].parentTitle;
 };
 
+const escapeUriForXML = uri => {
+  return uri.replace(/\&/g, '&amp;'); // Poor man's version. escapeURIComponent does too much escaping.
+};
+
 const highlightContent = highlight => {
   if (highlight.url) {
-    return `<p>${highlight.text}<br /><a href="${highlight.url}">Link</a></p>`;
+    return `<p>${highlight.text}<br /><a href="${escapeUriForXML(
+      highlight.url
+    )}">Link</a></p>`;
   } else {
     return `<p>${highlight.text}</p>`;
   }
