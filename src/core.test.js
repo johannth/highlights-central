@@ -1,10 +1,10 @@
-import { saveHighlightToDb } from './core';
+import { saveHighlightsToDb } from './core';
 
 const createMockDb = () => {
   return { none: jest.fn().mockReturnValue(Promise.resolve()) };
 };
 
-test('saveHighlightToDb inserts to db', () => {
+test('saveHighlightsToDb inserts to db', () => {
   const mockDb = createMockDb();
   const highlight = {
     parentSlug: 'http://nytimes.com/article',
@@ -15,14 +15,16 @@ test('saveHighlightToDb inserts to db', () => {
     url: null
   };
 
-  saveHighlightToDb(mockDb)(highlight).then(({ id }) => {
-    expect(
-      mockDb.none
-    ).toBeCalledWith('INSERT INTO highlights (id, parentSlug, parentTitle, parentURL, timestamp, text, url) VALUES ($1, $2, $3, $4, $5, $6, $7)', [ id, highlight.parentSlug, highlight.parentTitle, highlight.parentURL, highlight.timestamp.toISOString(), highlight.text, highlight.url ]);
+  saveHighlightsToDb(mockDb)([highlight]).then(highlights => {
+    const id = highlights[0].id;
+    const timestamp = highlights[0].timestamp.toISOString();
+    expect(mockDb.none).toBeCalledWith(
+      `insert into "highlights"("id","parentSlug","parentTitle","parentURL","timestamp","text","url") values(\'${id}\',\'http://nytimes.com/article\',\'A NYTimes Article\',\'http://nytimes.com/article\',\'${timestamp}\',\'A super informative highlight\',null)`
+    );
   });
 });
 
-test('saveHighlightToDb returns id to db', () => {
+test('saveHighlightsToDb returns id to db', () => {
   const mockDb = createMockDb();
   const highlight = {
     parentSlug: 'http://nytimes.com/article',
@@ -33,7 +35,7 @@ test('saveHighlightToDb returns id to db', () => {
     url: null
   };
 
-  saveHighlightToDb(mockDb)(highlight).then(value => {
-    expect(value.id).isNotNull();
+  saveHighlightsToDb(mockDb)([highlight]).then(highlights => {
+    expect(highlights[0].id).isNotNull();
   });
 });

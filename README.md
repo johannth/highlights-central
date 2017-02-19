@@ -19,6 +19,40 @@ With this API deployed, I can do the following:
 + Feed Instapaper highlights to Evernote through this API using IFTTT. (phew)
 + Feed Kindle highlights to Evernote through this API using a custom Chrome extension.
 
+## API
+
+Bulk store highlights.
+
+```
+POST /highlights
+{
+  "highlights": [
+    {
+      "parentSlug": "http://nytimes.com/article-2",
+      "parentTitle": "A NYTimes Article",
+      "parentURL": "http://nytimes.com/article",
+      "timestamp": "2014-01-24T00:00:00.000Z",
+      "text": "A super informative highlight",
+      "url": "http://nytimes.com/article"
+    },
+    {
+      "parentSlug": "http://nytimes.com/article-2",
+      "parentTitle": "A NYTimes Article",
+      "parentURL": "http://nytimes.com/article",
+      "timestamp": "2014-01-24T00:00:00.000Z",
+      "text": "Should I bring a coat? Another one?",
+      "url": "http://nytimes.com/article"
+    }
+  ],
+  "evernote": {
+    "notebookId": "e6ae73d5-026b-422c-bbf3-b45ffacbe974",
+    "tags": [
+      "instapaper"
+    ]
+  }
+}
+```
+
 ## Development
 
 Local development depends on
@@ -30,6 +64,7 @@ Local development depends on
 ### Run Locally
 
 ```bash
+echo "export EVERNOTE_TOKEN=<your_sandbox_token>" >> .env
 yarn start-dev
 ```
 

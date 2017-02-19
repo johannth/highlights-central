@@ -4,22 +4,22 @@ import bodyParser from 'body-parser';
 import pgp from 'pg-promise';
 import Evernote from 'evernote';
 
-import { saveHighlightToDb, writeAllHighlightsToEvernote } from './core';
+import { saveHighlightsToDb, writeAllHighlightsToEvernote } from './core';
 
 const db = new pgp()(process.env.DATABASE_URL);
 const app = express();
 
 const evernote = new Evernote.Client({
   token: process.env.EVERNOTE_TOKEN,
-  sandbox: false
+  sandbox: process.env.EVERNOTE_SANDBOX === 'true'
 });
 
 app.use(bodyParser.json());
 
-const parseTimestameFromRequest = req => {
-  if (req.body.highlight.timestamp) {
+const parseTimestampFromPayload = payload => {
+  if (payload.timestamp) {
     try {
-      return new Date(Date.parse(req.body.highlight.timestamp));
+      return new Date(Date.parse(payload.timestamp));
     } catch (error) {
       return new Date();
     }
@@ -28,26 +28,31 @@ const parseTimestameFromRequest = req => {
   }
 };
 
-app.post('/highlights', (req, res) => {
-  const highlight = {
-    parentSlug: req.body.highlight.parentSlug,
-    parentTitle: req.body.highlight.parentTitle,
-    parentURL: req.body.highlight.parentURL,
-    timestamp: parseTimestameFromRequest(req),
-    text: req.body.highlight.text,
-    url: req.body.highlight.url
+const parseHighlightFromPayload = payload => {
+  return {
+    parentSlug: payload.parentSlug,
+    parentTitle: payload.parentTitle,
+    parentURL: payload.parentURL,
+    timestamp: parseTimestampFromPayload(payload),
+    text: payload.text,
+    url: payload.url
   };
+};
+
+app.post('/highlights', (req, res) => {
+  const highlights = req.body.highlights.map(parseHighlightFromPayload);
 
   const evernoteTags = req.body.evernote.tags || [];
   const evernoteNotebookId = req.body.evernote.notebookId;
 
-  saveHighlightToDb(db)(highlight)
-    .then(({ id, parentSlug }) => {
-      console.log(id, parentSlug);
-      return writeAllHighlightsToEvernote(
-        db,
-        evernote
-      )(parentSlug, evernoteNotebookId, evernoteTags);
+  saveHighlightsToDb(db)(highlights)
+    .then(savedHighlights => {
+      const parentSlug = savedHighlights[0].parentSlug;
+      return writeAllHighlightsToEvernote(db, evernote)(
+        parentSlug,
+        evernoteNotebookId,
+        evernoteTags
+      );
     })
     .then(() => {
       res.json({});
@@ -56,7 +61,7 @@ app.post('/highlights', (req, res) => {
       console.error(error);
       newrelic.noticeError(error);
       res.status(500);
-      res.json({ error: { message: 'Error on saving highlight' } });
+      res.json({ error: { message: 'Error on saving highlights' } });
     });
 });
 
