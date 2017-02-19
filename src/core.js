@@ -70,7 +70,7 @@ export const writeAllHighlightsToEvernote = (db, evernote) => (
     )
     .then(highlightRows => {
       const highlights = highlightRows.map((
-        { id, parentSlug, parentTitle, parentUrl, timestamp, text, url }
+        { id, parentSlug, parentTitle, parentURL, timestamp, text, url }
       ) => {
         return {
           id,
@@ -91,7 +91,7 @@ export const writeAllHighlightsToEvernote = (db, evernote) => (
           // There is an evernoteNoteId -> update existing node
           return noteStore
             .updateNote({
-              guid: data.evernotenoteid,
+              guid: data.evernoteNoteId,
               notebookGuid: evernoteNotebookId,
               tagNames: evernoteTags,
               title: noteTitle(highlights),
