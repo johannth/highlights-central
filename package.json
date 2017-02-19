@@ -1,12 +1,11 @@
 {
-  "name": "highlights",
+  "name": "highlights-central",
   "version": "1.0.0",
   "main": "index.js",
   "repository": {},
   "author": "Jóhann Þ. Bergþórsson <johann.thorvaldur@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "bootstrap": "docker pull postgres:9.6.2-alpine",
     "start": "node src/server.js",
     "start-dev": "./build-support/start-dev.sh",
     "deploy": "git push heroku master --force",
