@@ -47,13 +47,13 @@ app.post('/highlights', (req, res) => {
     return;
   }
   const highlights = req.body.highlights.map(parseHighlightFromPayload);
+  const parentSlug = highlights[0].parentSlug;
 
   const evernoteTags = req.body.evernote.tags || [];
   const evernoteNotebookId = req.body.evernote.notebookId;
 
   saveHighlightsToDb(db)(highlights)
     .then(savedHighlights => {
-      const parentSlug = savedHighlights[0].parentSlug;
       return writeAllHighlightsToEvernote(db, evernote)(
         parentSlug,
         evernoteNotebookId,

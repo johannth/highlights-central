@@ -16,23 +16,50 @@ const highlightToDbValue = (
 };
 
 export const saveHighlightsToDb = db => highlights => {
-  const columnSet = new pgp.helpers.ColumnSet(
-    [
-      'id',
-      'parentSlug',
-      'parentTitle',
-      'parentURL',
-      'timestamp',
-      'text',
-      'url'
-    ],
-    { table: 'highlights' }
-  );
-  const values = highlights.map(highlightToDbValue);
-  const query = pgp.helpers.insert(values, columnSet);
-  return db.none(query).then(() => {
-    return values;
+  return filterHighlightsToNew(db)(highlights).then(newHighlights => {
+    if (newHighlights.length == 0) {
+      return [];
+    }
+    const columnSet = new pgp.helpers.ColumnSet(
+      [
+        'id',
+        'parentSlug',
+        'parentTitle',
+        'parentURL',
+        'timestamp',
+        'text',
+        'url'
+      ],
+      { table: 'highlights' }
+    );
+    const values = newHighlights.map(highlightToDbValue);
+    const query = pgp.helpers.insert(values, columnSet);
+    return db.none(query).then(() => {
+      return values;
+    });
   });
+};
+
+const filterHighlightsToNew = db => highlights => {
+  const parentSlug = highlights[0].parentSlug;
+  return db
+    .many(
+      'SELECT "parentSlug", text FROM highlights WHERE "parentSlug" = $1 AND text IN ($2:csv)',
+      [parentSlug, highlights.map(highlight => highlight.text)]
+    )
+    .then(highlightsAlreadyInDb => {
+      const lookup = highlightsAlreadyInDb.reduce(
+        (accumulator, highlight) => {
+          accumulator[highlight.text] = true;
+          return accumulator;
+        },
+        {}
+      );
+      return highlights.filter(highlight => !lookup[highlight.text]);
+    })
+    .catch(() => {
+      return highlights;
+    });
 };
 
 const noteTitle = highlights => {
