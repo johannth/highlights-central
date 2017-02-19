@@ -5,9 +5,9 @@ CREATE TABLE highlights (
     "parentURL" text NOT NULL,
     "timestamp" timestamp NOT NULL,
     "text" text NOT NULL,
-    "url" text,
-    UNIQUE ("parentSlug", "text")
+    "url" text
 );
+CREATE UNIQUE INDEX unique_parentSlug_text_index on highlights ("parentSlug", MD5(text));
 
 CREATE TABLE evernote (
     "parentSlug" text PRIMARY KEY,
