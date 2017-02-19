@@ -3,6 +3,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import pgp from 'pg-promise';
 import Evernote from 'evernote';
+import cors from 'cors';
 
 import { saveHighlightsToDb, writeAllHighlightsToEvernote } from './core';
 
@@ -15,6 +16,7 @@ const evernote = new Evernote.Client({
 });
 
 app.use(bodyParser.json());
+app.use(cors());
 
 const parseTimestampFromPayload = payload => {
   if (payload.timestamp) {
