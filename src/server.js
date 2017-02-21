@@ -64,7 +64,7 @@ app.post('/highlights', (req, res) => {
       res.json({});
     })
     .catch(error => {
-      console.error(error);
+      console.error(error, { requestBody: req.body });
       newrelic.noticeError(error);
       res.status(500);
       res.json({ error: { message: 'Error on saving highlights' } });
