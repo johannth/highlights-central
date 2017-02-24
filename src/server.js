@@ -43,6 +43,7 @@ const parseHighlightFromPayload = parent => payload => {
     parentSlug: parent.slug,
     parentTitle: parent.title,
     parentURL: parent.url,
+    order: payload.order,
     timestamp: parseTimestampFromPayload(payload),
     text: payload.text,
     url: payload.url
@@ -73,7 +74,7 @@ app.post('/highlights', (req, res) => {
       res.json({});
     })
     .catch(error => {
-      console.error(error, { requestBody: req.body });
+      console.error(error);
       newrelic.noticeError(error, { requestBody: req.body });
       res.status(500);
       res.json({ error: { message: 'Error on saving highlights' } });

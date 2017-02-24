@@ -30,17 +30,19 @@ POST /highlights
     "slug": "http://nytimes.com/article-2",
     "title": "A NYTimes Article",
     "url": "http://nytimes.com/article"
-  }
+  },
   "highlights": [
     {
       "timestamp": "2014-01-24T00:00:00.000Z",
       "text": "A super informative highlight",
-      "url": "http://nytimes.com/article"
+      "url": "http://nytimes.com/article",
+      "order": 0
     },
     {
       "timestamp": "2014-01-24T00:00:00.000Z",
       "text": "Should I bring a coat? Another one?",
-      "url": "http://nytimes.com/article"
+      "url": "http://nytimes.com/article",
+      "order": 1
     }
   ],
   "evernote": {

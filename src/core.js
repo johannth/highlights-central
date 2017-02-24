@@ -2,13 +2,14 @@ import uuid from 'uuid/v1';
 const pgp = require('pg-promise')();
 
 const highlightToDbValue = (
-  { parentSlug, parentTitle, parentURL, timestamp, text, url }
+  { parentSlug, parentTitle, parentURL, order, timestamp, text, url }
 ) => {
   return {
     id: uuid(),
     parentSlug,
     parentTitle,
     parentURL,
+    order,
     timestamp: timestamp.toISOString(),
     text,
     url
@@ -26,6 +27,7 @@ export const saveHighlightsToDb = db => highlights => {
         'parentSlug',
         'parentTitle',
         'parentURL',
+        'order',
         'timestamp',
         'text',
         'url'
@@ -98,7 +100,7 @@ export const writeAllHighlightsToEvernote = (db, evernote) => (
   const noteStore = evernote.getNoteStore();
   return db
     .many(
-      'SELECT id, "parentSlug", "parentTitle", "parentURL", timestamp, text, url FROM highlights WHERE "parentSlug" = $1 ORDER BY timestamp ASC',
+      'SELECT id, "parentSlug", "parentTitle", "parentURL", "order", timestamp, text, url FROM highlights WHERE "parentSlug" = $1 ORDER BY "order" ASC, "timestamp" ASC',
       [parentSlug]
     )
     .then(highlightRows => {
