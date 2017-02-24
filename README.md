@@ -26,19 +26,18 @@ Bulk store highlights.
 ```
 POST /highlights
 {
+  "parent": {
+    "slug": "http://nytimes.com/article-2",
+    "title": "A NYTimes Article",
+    "url": "http://nytimes.com/article"
+  }
   "highlights": [
     {
-      "parentSlug": "http://nytimes.com/article-2",
-      "parentTitle": "A NYTimes Article",
-      "parentURL": "http://nytimes.com/article",
       "timestamp": "2014-01-24T00:00:00.000Z",
       "text": "A super informative highlight",
       "url": "http://nytimes.com/article"
     },
     {
-      "parentSlug": "http://nytimes.com/article-2",
-      "parentTitle": "A NYTimes Article",
-      "parentURL": "http://nytimes.com/article",
       "timestamp": "2014-01-24T00:00:00.000Z",
       "text": "Should I bring a coat? Another one?",
       "url": "http://nytimes.com/article"

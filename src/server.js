@@ -30,11 +30,19 @@ const parseTimestampFromPayload = payload => {
   }
 };
 
-const parseHighlightFromPayload = payload => {
+const parseParentFromPayload = payload => {
   return {
-    parentSlug: payload.parentSlug,
-    parentTitle: payload.parentTitle,
-    parentURL: payload.parentURL,
+    slug: payload.slug,
+    title: payload.title,
+    url: payload.url
+  };
+};
+
+const parseHighlightFromPayload = parent => payload => {
+  return {
+    parentSlug: parent.slug,
+    parentTitle: parent.title,
+    parentURL: parent.url,
     timestamp: parseTimestampFromPayload(payload),
     text: payload.text,
     url: payload.url
@@ -46,8 +54,9 @@ app.post('/highlights', (req, res) => {
     res.json({});
     return;
   }
-  const highlights = req.body.highlights.map(parseHighlightFromPayload);
-  const parentSlug = highlights[0].parentSlug;
+
+  const parent = parseParentFromPayload(req.body.parent);
+  const highlights = req.body.highlights.map(parseHighlightFromPayload(parent));
 
   const evernoteTags = req.body.evernote.tags || [];
   const evernoteNotebookId = req.body.evernote.notebookId;
@@ -55,7 +64,7 @@ app.post('/highlights', (req, res) => {
   saveHighlightsToDb(db)(highlights)
     .then(savedHighlights => {
       return writeAllHighlightsToEvernote(db, evernote)(
-        parentSlug,
+        parent.slug,
         evernoteNotebookId,
         evernoteTags
       );
